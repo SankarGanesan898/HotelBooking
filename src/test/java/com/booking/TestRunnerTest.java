@@ -18,6 +18,6 @@ import io.cucumber.junit.CucumberOptions;
         tags = "@hotelbookingregressiontests"
 )
 
-public class TestRunner {
+public class TestRunnerTest {
 
 }
