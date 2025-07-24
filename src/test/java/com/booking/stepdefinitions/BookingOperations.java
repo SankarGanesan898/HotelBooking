@@ -12,6 +12,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.restassured.module.jsv.JsonSchemaValidator;
 
 public class BookingOperations extends Utilities{	
 	
@@ -53,8 +54,7 @@ public class BookingOperations extends Utilities{
 	@Then("the response status code should be {int}")
 	public void the_response_status_code_should_be(int expectedStatusCode) {
 		
-		assertEquals(expectedStatusCode, response.getStatusCode());
-		System.out.println("response code = "+response.getStatusCode());
+		assertEquals(expectedStatusCode, response.getStatusCode());		
 	}
 	
 	@Then("user should get the response code {int}")
@@ -71,7 +71,6 @@ public class BookingOperations extends Utilities{
 				.post(bookingRequest.getEndPoint());
 		String token = response.jsonPath().getString("token");
 		bookingRequest.setToken(token);
-		System.out.println("token set = " + bookingRequest.getToken());
 	}
 	
 	@When("asks the details of the room by room id {int}")
@@ -111,7 +110,8 @@ public class BookingOperations extends Utilities{
 			bookingRequest.setDepositpaid(false);
 		}				
 
-		response = requestSetup().body(createRequestBody())
+		response = requestSetup()
+				.body(createRequestBody())
 				.cookie("token", bookingRequest.getToken())
 				.when()
 				.put(bookingRequest.getEndPoint() + bookingId);				
@@ -142,4 +142,27 @@ public class BookingOperations extends Utilities{
 					.when()
 					.get(bookingRequest.getEndPoint());
 	    } 
+	
+	@Then("validate the response with json schema {string}")
+	public void validate_the_response_with_json_schema(String schemaFileName) {
+		response.then()
+				.assertThat()
+				.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/" + schemaFileName));
+	}
+	
+	@When("user requests the room summary details")
+	public void user_requests_the_room_summary_details() {
+		response = requestSetup().cookie(bookingRequest.getToken()).when()
+				.get(bookingRequest.getEndPoint());
+	}
+	
+	@When("user requests the room availability details from {string} to {string} dates")
+	public void user_requests_the_room_availability_details_from_to_dates(String checkin, String checkout) {
+		response = requestSetup()
+				.cookie(bookingRequest.getToken())
+				.param("checkin", checkin)
+				.param("checkin", checkout)
+				.when()
+				.get(bookingRequest.getEndPoint());
+	}
 }

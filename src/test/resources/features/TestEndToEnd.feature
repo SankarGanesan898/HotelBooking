@@ -1,4 +1,4 @@
-@business
+@business @hotelbookingregressiontests
 Feature: Test end to end flow
 
 Background:
