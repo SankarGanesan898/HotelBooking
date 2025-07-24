@@ -1,12 +1,9 @@
 package com.booking.stepdefinitions;
 
 import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 import java.util.Map;
-
 import org.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import base.BookingDates;
 import base.Utilities;
@@ -51,9 +48,6 @@ public class BookingOperations extends Utilities{
 				.body(createRequestBody())
 				.when()
 				.post("api/booking");
-		
-		System.out.println(response.asPrettyString());
-
 	}
 	
 	@Then("the response status code should be {int}")
@@ -138,4 +132,14 @@ public class BookingOperations extends Utilities{
 		List<String> actualErrorMessage = response.jsonPath().getList("errors");
 		assertEquals("Error message mismatch", errorMessage, actualErrorMessage.get(0));
 	}
+	
+	@When("user searches booking details with missing room id")
+	public void user_searches_booking_details_with_missing_room_id() {
+		 Integer roomid = null;
+		 response = requestSetup()
+					.cookie("token", bookingRequest.getToken())
+					.param("roomid", roomid)
+					.when()
+					.get(bookingRequest.getEndPoint());
+	    } 
 }

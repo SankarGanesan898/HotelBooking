@@ -6,6 +6,19 @@ Background:
 	When user creates a auth token with login authentication as "admin" and "password"
 	Then user should get the response code 200
 
+Scenario: validate the response code for invalid password
+    Given user hits endpoint "api/auth/login"
+    When user creates a auth token with login authentication as "admin" and "password123"
+    Then user should get the response code 401
+
+Scenario: validate the response code when retrieving details with missing room id
+	Given user hits endpoint "api/auth/login"
+	When user creates a auth token with login authentication as "admin" and "password"
+	Then user should get the response code 200
+	Given user hits endpoint "api/booking"
+	When user searches booking details with missing room id
+	Then the response status code should be 400
+
 Scenario Outline: create a booking with incorrect field values
 	Given user hits endpoint "api/booking"
     And user books the room with the given details
