@@ -85,4 +85,40 @@ public class BookingOperations extends Utilities{
 				.when()
 				.get(bookingRequest.getEndPoint());
 	}
+	
+	@When("User requests the details of the room by room id")
+	public void User_requests_the_details_of_the_room_by_room_id() {
+
+		response = requestSetup()
+				.cookie("token", bookingRequest.getToken())
+				.param("roomid", bookingRequest.getRoomid())
+				.when()
+				.get(bookingRequest.getEndPoint());
+		bookingId = response.jsonPath().getInt("bookings[0].bookingid");
+		bookingRequest.setBookingId(bookingId);
+		System.out.println("Booking ID of the booked room = " + bookingId);		
+		validateBookingResponse(bookingRequest.getFirstname() , bookingRequest.getLastname() , dates.getCheckin() , dates.getCheckout(), bookingRequest.getRoomid());
+	}
+	
+	@When("the user edits the booking details")
+	public void theUserEditsTheBookingDetails(final DataTable dataTable) throws JsonProcessingException {
+		int roomid = Integer.parseInt(generateRandomRoomId());
+		dates = new BookingDates();
+		for (Map<String, String> data : dataTable.asMaps(String.class, String.class)) {
+			bookingRequest.setFirstname(data.get("firstname"));
+			bookingRequest.setLastname(data.get("lastname"));
+			dates.setCheckin(data.get("checkin"));
+			dates.setCheckout(data.get("checkout"));
+			bookingRequest.setBookingdates(dates);
+			bookingRequest.setRoomid(roomid);			
+			bookingRequest.setDepositpaid(false);
+		}				
+
+		response = requestSetup().body(createRequestBody())
+				.cookie("token", bookingRequest.getToken())
+				.when()
+				.put(bookingRequest.getEndPoint() + bookingId);				
+		
+		System.out.println("response status code =" + response.statusCode());
+	}
 }

@@ -1,5 +1,8 @@
 package base;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
 import java.util.Random;
 import org.json.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,6 +41,22 @@ public class Utilities {
 		final Random random = new Random();
 		return String.valueOf(2000 + random.nextInt(900));
 
+	}
+	
+	public void validateBookingResponse(String firstname, String lastname, String checkin, String checkout,int roomid) {
+		
+		List<Integer> roomIds = response.jsonPath().getList("bookings.roomid");
+		int responseRoomId = roomIds.get(0);
+		String responseFirstname = response.jsonPath().getString("bookings[0].firstname");
+		String responseLastname = response.jsonPath().getString("bookings[0].lastname");
+		String responseCheckin = response.jsonPath().getString("bookings[0].bookingdates.checkin");
+		String responseCheckout = response.jsonPath().getString("bookings[0].bookingdates.checkout");
+
+		assertEquals("First Name did not match", firstname, responseFirstname);
+		assertEquals("Room Id did not match", roomid, responseRoomId);
+		assertEquals("Last Name did not match", lastname, responseLastname);
+		assertEquals("Check in date did not match", checkin, responseCheckin);
+		assertEquals("Checkout date did not match", checkout, responseCheckout);
 	}
 
 }
