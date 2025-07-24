@@ -121,4 +121,12 @@ public class BookingOperations extends Utilities{
 		
 		System.out.println("response status code =" + response.statusCode());
 	}
+	
+	@When("the user deletes the booking with booking ID")
+	public void theUserDeletesTheBookingWithBookingID() {
+		System.out.println("fetchedBookingId = " + bookingRequest.getBookingId());
+		int fetchedBookingId = bookingRequest.getBookingId();
+		response = requestSetup().cookie("token", bookingRequest.getToken()).when()
+				.delete(bookingRequest.getEndPoint() + fetchedBookingId);
+	}
 }
