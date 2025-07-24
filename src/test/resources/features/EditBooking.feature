@@ -1,3 +1,4 @@
+@happyflowscenario
 Feature: Edit Booking Details
 
 Background:
@@ -5,7 +6,6 @@ Background:
 	When user creates a auth token with login authentication as "admin" and "password"
 	Then user should get the response code 200
 
-@testedit1
 Scenario: Edit a the booking details
 	Given user hits endpoint "api/booking/"
     And user books the room with the given details

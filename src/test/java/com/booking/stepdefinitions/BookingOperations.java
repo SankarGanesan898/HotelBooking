@@ -1,6 +1,8 @@
 package com.booking.stepdefinitions;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -9,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import base.BookingDates;
 import base.Utilities;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -128,5 +131,11 @@ public class BookingOperations extends Utilities{
 		int fetchedBookingId = bookingRequest.getBookingId();
 		response = requestSetup().cookie("token", bookingRequest.getToken()).when()
 				.delete(bookingRequest.getEndPoint() + fetchedBookingId);
+	}
+	
+	@And("the user should see response with incorrect {string}")
+	public void theUserShouldSeeTheResponseWithIncorrectField(final String errorMessage) {
+		List<String> actualErrorMessage = response.jsonPath().getList("errors");
+		assertEquals("Error message mismatch", errorMessage, actualErrorMessage.get(0));
 	}
 }

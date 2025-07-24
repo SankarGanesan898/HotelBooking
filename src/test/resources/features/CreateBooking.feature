@@ -1,6 +1,6 @@
+@happyflowscenario
 Feature: Test create a room booking
 
-@testcreate1
 Scenario Outline: Create a room booking
     Given user hits endpoint "api/booking"
     When user books the room with the given details

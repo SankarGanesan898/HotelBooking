@@ -1,3 +1,4 @@
+@business
 Feature: Test end to end flow
 
 Background:
@@ -5,7 +6,6 @@ Background:
 	When user creates a auth token with login authentication as "admin" and "password"
 	Then user should get the response code 200
 
-@teste2e
 Scenario Outline: Test end to end flow    
     Given user hits endpoint "api/booking"
     And user books the room with the given details
