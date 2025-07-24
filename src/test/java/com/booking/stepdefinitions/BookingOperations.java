@@ -2,6 +2,9 @@ package com.booking.stepdefinitions;
 
 import static org.junit.Assert.assertEquals;
 import java.util.Map;
+
+import org.json.JSONObject;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import base.BookingDates;
 import base.Utilities;
@@ -41,9 +44,12 @@ public class BookingOperations extends Utilities{
 			bookingRequest.setDepositpaid(false);
 		}				
 
-		response = requestSetup().body(createRequestBody())
+		response = requestSetup()
+				.body(createRequestBody())
 				.when()
 				.post("api/booking");
+		
+		System.out.println(response.asPrettyString());
 
 	}
 	
@@ -52,5 +58,31 @@ public class BookingOperations extends Utilities{
 		
 		assertEquals(expectedStatusCode, response.getStatusCode());
 		System.out.println("response code = "+response.getStatusCode());
+	}
+	
+	@Then("user should get the response code {int}")
+	public void user_should_get_the_response_code(Integer statusCode) {
+		assertEquals(Long.valueOf(statusCode), Long.valueOf(response.getStatusCode()));
+	}
+	
+	@When("user creates a auth token with login authentication as {string} and {string}")
+	public void user_creates_a_auth_token_with_login_authentication_as_and(String userName, String password) {
+		JSONObject loginAuth = new JSONObject();
+		loginAuth.put("username", userName);
+		loginAuth.put("password", password);
+		response = requestSetup().body(loginAuth.toString()).when()
+				.post(bookingRequest.getEndPoint());
+		String token = response.jsonPath().getString("token");
+		bookingRequest.setToken(token);
+		System.out.println("token set = " + bookingRequest.getToken());
+	}
+	
+	@When("asks the details of the room by room id {int}")
+	public void asks_the_details_of_the_room_by_room_id(int roomid) {
+		response = requestSetup()
+				.cookie("token", bookingRequest.getToken())
+				.param("roomid", roomid)
+				.when()
+				.get(bookingRequest.getEndPoint());
 	}
 }

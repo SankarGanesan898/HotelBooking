@@ -8,8 +8,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-public class Utilities {
-	
+public class Utilities {	
 
 	ObjectMapper mapper;
 	protected BookingRequest bookingRequest = new BookingRequest();;
